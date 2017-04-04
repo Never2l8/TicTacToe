@@ -1,11 +1,12 @@
-import java.io.IOException;
 import java.util.Objects;
+import java.util.Scanner;
 
 /**
  * Created by nina on 3/20/17.
  */
 public class Game {
     private GameSettings settings;
+    private GameField gameField;
 
     public void mainLoop() {
         //Главный цикл игры. Он бесконечный. Выход из него только по вводу пользователя.
@@ -20,40 +21,39 @@ public class Game {
         //Дать возможность повторить ход, если он был некорректный.
         //Циклики выделить в отдельные функции.
         while (true) {
-            initSettings();
+            initField();
+            gameLoop();
 
         }
 
     }
 
-    private void initSettings() {
+    private void initField() {
         settings = new GameSettings();
-
         do {
             printFirstMenuScreen();
+            Scanner scanner = new Scanner(System.in);
             System.out.print("Enter your choice:");
-            String input = System.console().readLine();
+            String input = scanner.next();
             if (Objects.equals(input, "1")) {
-                //TODO start the game
+                gameField = new GameField();
+                gameField.init();
+                break;
             }
             if (Objects.equals(input, "2")) {
-                try {
-                    Runtime.getRuntime().exec("clear");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 customizeSettings();
+                gameField = new GameField(settings);
+                gameField.init();
+                break;
             }
             if (Objects.equals(input, "0")) {
+                System.out.println("Thank you! Bye!");
                 System.exit(0);
             }
-            try {
-                Runtime.getRuntime().exec("clear");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
             System.out.println("Sorry, you entered a wrong number. Please try again.");
-        } while (true);
+        }
+        while (true);
     }
 
     private void printFirstMenuScreen() {
@@ -66,10 +66,9 @@ public class Game {
 
     private void customizeSettings() {
         do {
-
-
-            System.out.println("Please enter field size. It must be greater than two. ");
-            String input = System.console().readLine();
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Please enter field size. It must be greater than two and not greater than 10: ");
+            String input = scanner.next();
             int fieldSize;
             try {
                 fieldSize = Integer.parseInt(input);
@@ -77,9 +76,14 @@ public class Game {
                 System.out.println("Invalid value. Try again.");
                 continue;
             }
+            if (fieldSize <= 2 || fieldSize > 10) {
+                System.out.println("Invalid value. It must be greater than two and not greater than 10. Try again: ");
+                continue;
+            }
+
             settings.fieldSize = fieldSize;
-            System.out.println("Please enter win number. It must be greater than three but not greater than field size.");
-            input = System.console().readLine();
+            System.out.print("Please enter win number. It must be greater than three but not greater than field size: ");
+            input = scanner.next();
             int winNumber;
             try {
                 winNumber = Integer.parseInt(input);
@@ -87,12 +91,67 @@ public class Game {
                 System.out.println("Invalid value. Try again.");
                 continue;
             }
+            if (winNumber < 3 || winNumber > fieldSize) {
+                System.out.println("Invalid value. It must be greater than three but not greater than field size. Try again: ");
+                continue;
+            }
             settings.winNumber = winNumber;
         }
         while (true);
+    }
+
+    private void turnLoop() {
+        do {
+            gameField.printStep();
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter your coordinates by separating them with a comma: ");
+            String input = scanner.next();
+            input = input.replaceAll("\\s+", "");
+            String[] coordinatesStr = input.split(",");
+            if (!(coordinatesStr.length == 2)) {
+                System.out.println("Error message");
+                continue;
+            }
+            int x;
+            try {
+                x = Integer.parseInt(coordinatesStr[0]);
+            } catch (NumberFormatException e) {
+                System.out.println("Error message");
+                continue;
+            }
+            int y;
+            try {
+                y = Integer.parseInt(coordinatesStr[1]);
+            } catch (NumberFormatException e) {
+                System.out.println("Error message");
+                continue;
+            }
+            if (x < 1 || x > settings.fieldSize || y < 1 || y > settings.fieldSize) {
+                System.out.println("Error message");
+                continue;
+            }
+            if (gameField.field[y][x] != CellStateEnum.EMPTY) {
+                System.out.println("Error message");
+                continue;
+            }
+            gameField.placeSymbol(y, x);
+            gameField.fieldStateUpdate();
+            gameField.printWinner();
+        } while (true);
+
 
     }
+
+    private void gameLoop() {
+        do {
+            turnLoop();
+            gameField.switchTurn();
+        } while (true);
+    }
+
+
 }
+
 
 class GameSettings {
     public int fieldSize = 3, winNumber = 3;

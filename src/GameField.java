@@ -9,16 +9,16 @@ public class GameField {
     FieldStateEnum fieldState;
     TurnEnum turn;
 
-    public GameField(int fieldSize, int winNumber) {
-        this.field = new CellStateEnum[fieldSize][fieldSize];
-        this.winNumber = winNumber;
+    public GameField(GameSettings initSettings) {
+        int size = initSettings.fieldSize;
+        this.field = new CellStateEnum[size][size];
+        this.winNumber = initSettings.winNumber;
         fieldState = FieldStateEnum.GAME;
         turn = TurnEnum.CROSSES;
-
     }
 
     public GameField() {
-        this(3, 3);
+        this(new GameSettings());
     }
 
     public void init() {
@@ -43,7 +43,6 @@ public class GameField {
             System.out.println();
         }
         System.out.println("__________________________________");
-        printWinner();
         printTurn();
     }
 
@@ -60,30 +59,37 @@ public class GameField {
 
     private void printCell(CellStateEnum cell) {
         if (cell == CellStateEnum.EMPTY)
-            System.out.print(" ");
+            System.out.print("#");
         if (cell == CellStateEnum.CROSS)
             System.out.print("X");
         if (cell == CellStateEnum.NOUGHT)
             System.out.print("O");
     }
 
-    private void printWinner() {
+    public void printWinner() {
         if (fieldState == FieldStateEnum.CROSSES_WON)
-            System.out.print("Cross won!");
+            System.out.println("CROSSES won!");
         if (fieldState == FieldStateEnum.NOUGHTS_WON)
-            System.out.print("Zero won!");
+            System.out.println("NOUGHTS won!");
         if (fieldState == FieldStateEnum.DRAW)
-            System.out.print("Draw");
+            System.out.println("Draw");
     }
 
     private void printTurn() {
         if (fieldState == FieldStateEnum.GAME) {
             if (turn == TurnEnum.CROSSES)
-                System.out.print("Crosses turn");
+                System.out.println("Crosses turn");
             if (turn == TurnEnum.NOUGHTS)
-                System.out.print("Noughts turn");
+                System.out.println("Noughts turn");
         }
     }
 
+    public void fieldStateUpdate() {
+        fieldState = FieldStateEnum.GAME;
+    }
 
+    public void switchTurn(){
+        if(turn == TurnEnum.CROSSES) turn = TurnEnum.NOUGHTS;
+        else turn = TurnEnum.CROSSES;
+    }
 }
