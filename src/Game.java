@@ -103,7 +103,7 @@ public class Game {
 
     private void turnLoop() {
         do {
-            gameField.printStep();
+            gameField.printField();
             gameField.printTurn();
             Scanner scanner = new Scanner(System.in);
             System.out.println("Your coordinates must be integers which greater than 0 and less than " + settings.fieldSize + "." + "\nEnter your coordinates by separating them with a comma: ");

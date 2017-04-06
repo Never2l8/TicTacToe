@@ -1,7 +1,6 @@
 import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,19 +27,21 @@ public class GameField {
     public void init() {
         for (int i = 0; i < field.length; i++) {
             for (int j = 0; j < field.length; j++) {
+
                 field[i][j] = CellStateEnum.EMPTY;
             }
         }
     }
 
-    public void initStd() {
-        for (CellStateEnum[] row : field) {
-            Arrays.fill(row, CellStateEnum.EMPTY);
-        }
-    }
 
-    public void printStep() {
+    public void printField() {
+        System.out.print(" ");
+        for (int i = 1; i <= field.length; i++) {
+            System.out.print(i);
+        }
+        System.out.println();
         for (int i = 0; i < field.length; i++) {
+            System.out.print(i + 1);
             for (int j = 0; j < field.length; j++) {
                 printCell(field[i][j]);
             }
@@ -63,7 +64,7 @@ public class GameField {
 
     private void printCell(CellStateEnum cell) {
         if (cell == CellStateEnum.EMPTY)
-            System.out.print("|_|");
+            System.out.print("#");
         if (cell == CellStateEnum.CROSS)
             System.out.print("X");
         if (cell == CellStateEnum.NOUGHT)
@@ -72,7 +73,7 @@ public class GameField {
 
     public void printWinner() {
         if (fieldState != FieldStateEnum.GAME) {
-            printStep();
+            printField();
         }
         if (fieldState == FieldStateEnum.CROSSES_WON)
             System.out.println("CROSSES won!");
@@ -184,10 +185,26 @@ public class GameField {
             }
             if (counter == winNumber) fieldState = won;
         }
+        emptyCellsCounter();
+        if (emptyCellsCounter() == 0) fieldState = FieldStateEnum.DRAW;
     }
 
     public void switchTurn() {
         if (turn == TurnEnum.CROSSES) turn = TurnEnum.NOUGHTS;
         else turn = TurnEnum.CROSSES;
+    }
+
+    private int emptyCellsCounter() {
+        int counter = 0;
+        for (int i = 0; i < field.length; i++) {
+            for (int j = 0; j < field.length; j++) {
+                if (field[i][j] == CellStateEnum.EMPTY) {
+                    counter++;
+
+                }
+            }
+
+        }
+        return counter;
     }
 }
