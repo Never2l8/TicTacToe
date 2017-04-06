@@ -63,7 +63,7 @@ public class GameField {
 
     private void printCell(CellStateEnum cell) {
         if (cell == CellStateEnum.EMPTY)
-            System.out.print("#");
+            System.out.print("|_|");
         if (cell == CellStateEnum.CROSS)
             System.out.print("X");
         if (cell == CellStateEnum.NOUGHT)

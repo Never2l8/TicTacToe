@@ -106,34 +106,34 @@ public class Game {
             gameField.printStep();
             gameField.printTurn();
             Scanner scanner = new Scanner(System.in);
-            System.out.print("Enter your coordinates by separating them with a comma: ");
+            System.out.println("Your coordinates must be integers which greater than 0 and less than " + settings.fieldSize + "." + "\nEnter your coordinates by separating them with a comma: ");
             String input = scanner.next();
             input = input.replaceAll("\\s+", "");
             String[] coordinatesStr = input.split(",");
             if (!(coordinatesStr.length == 2)) {
-                System.out.println("Error message");
+                System.out.println("Your coordinates must be integers which greater than 0 and less than " + settings.fieldSize + "." + "\nEnter your coordinates by separating them with a comma: ");
                 continue;
             }
             int x;
             try {
                 x = Integer.parseInt(coordinatesStr[0]);
             } catch (NumberFormatException e) {
-                System.out.println("Error message");
+                System.out.println("Your coordinates must be integers which greater than 0 and less than " + settings.fieldSize + ":");
                 continue;
             }
             int y;
             try {
                 y = Integer.parseInt(coordinatesStr[1]);
             } catch (NumberFormatException e) {
-                System.out.println("Error message");
+                System.out.println("Your coordinates must be integers which greater than 0 and less than " + settings.fieldSize + ":");
                 continue;
             }
             if (x < 1 || x > settings.fieldSize || y < 1 || y > settings.fieldSize) {
-                System.out.println("Error message");
+                System.out.println("Your coordinates must be integers which greater than 0 and less than " + settings.fieldSize + ":");
                 continue;
             }
-            if (gameField.field[y-1][x-1] != CellStateEnum.EMPTY) {
-                System.out.println("Error message");
+            if (gameField.field[y - 1][x - 1] != CellStateEnum.EMPTY) {
+                System.out.println("This field is already taken, specify other coordinates.");
                 continue;
             }
             gameField.placeSymbol(y, x);
@@ -144,8 +144,6 @@ public class Game {
 
 
     }
-
-
 
 
 }
