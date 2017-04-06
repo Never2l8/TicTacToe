@@ -22,7 +22,7 @@ public class Game {
         //Циклики выделить в отдельные функции.
         while (true) {
             initField();
-            gameLoop();
+            turnLoop();
 
         }
 
@@ -96,6 +96,7 @@ public class Game {
                 continue;
             }
             settings.winNumber = winNumber;
+            break;
         }
         while (true);
     }
@@ -103,6 +104,7 @@ public class Game {
     private void turnLoop() {
         do {
             gameField.printStep();
+            gameField.printTurn();
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter your coordinates by separating them with a comma: ");
             String input = scanner.next();
@@ -130,24 +132,20 @@ public class Game {
                 System.out.println("Error message");
                 continue;
             }
-            if (gameField.field[y][x] != CellStateEnum.EMPTY) {
+            if (gameField.field[y-1][x-1] != CellStateEnum.EMPTY) {
                 System.out.println("Error message");
                 continue;
             }
             gameField.placeSymbol(y, x);
             gameField.fieldStateUpdate();
             gameField.printWinner();
-        } while (true);
-
-
-    }
-
-    private void gameLoop() {
-        do {
-            turnLoop();
             gameField.switchTurn();
-        } while (true);
+        } while (gameField.fieldState == FieldStateEnum.GAME);
+
+
     }
+
+
 
 
 }
